@@ -5,13 +5,31 @@ Crafty.scene('Loading', function(){
     .attr({ x: 0, y: Game.height()/2 - 24, w: Game.width() })
     .css({ 'font-size': '13px', 'font-family': 'Arial', 'color': 'white', 'text-align': 'center' })
 
-    Crafty.load(['assets/16x16_forest_1.gif'], function(){
+    Crafty.load([
+        'assets/16x16_forest_1.gif',
+        'assets/hunter.png',
+        'assets/door_knock_3x.mp3',
+        'assets/door_knock_3x.ogg',
+        'assets/door_knock_3x.aac',
+        'assets/board_room_applause.mp3',
+        'assets/board_room_applause.ogg',
+        'assets/board_room_applause.aac',
+        'assets/game.wav'], function(){
 
         Crafty.sprite(16, 'assets/16x16_forest_1.gif', {
             spr_tree: [0, 0],
             spr_bush: [1, 0],
-            spr_village: [0, 1],
-            spr_player: [1 ,1]
+            spr_village: [0, 1]
+        });
+
+        Crafty.sprite(16, 'assets/hunter.png', {
+            spr_player: [0, 2]
+        }, 0, 2);
+
+        Crafty.audio.add({
+            'knock': ['assets/door_knock_3x.mp3', 'assets/door_knock_3x.ogg', 'assets/door_knock_3x.aac'],
+            'applause': ['assets/board_room_applause.mp3', 'assets/board_room_applause.ogg', 'assets/board_room_applause.aac'],
+            'game': ['assets/game.wav']
         });
 
         Crafty.scene('Game');
@@ -20,6 +38,8 @@ Crafty.scene('Loading', function(){
 
 
 Crafty.scene('Game', function(){
+
+    Crafty.audio.play('game');
 
     // Create an array to store grid that has been used/occupied.
     this.occupied = new Array(Game.map_grid.xtimes);
@@ -96,7 +116,12 @@ Crafty.scene('Victory', function(){
     .text('Congrats!! press any KEY to continue...')
     .css({'color': 'white', 'text-align': 'center', 'font-size': '13px', 'font-family': 'Arial'});
 
+
+    Crafty.audio.stop('game');
+    Crafty.audio.play('applause');
+
     this.restart_game = this.bind('KeyDown', function(){
+        Crafty.audio.stop('applause');
         Crafty.scene('Game');
     });
 }, function(){
